@@ -1,10 +1,12 @@
 import express, { json } from 'express';
+import cors from 'cors';
 import mysql from 'mysql';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
 app.use(json());
+app.use(cors());
 
 const db = mysql.createConnection({
   host: process.env.MYSQL_HOST,
@@ -15,12 +17,17 @@ const db = mysql.createConnection({
 
 db.connect();
 
-app.get('/users', (req, res) => {
-  db.query(`SELECT * FROM users;`, (err, rows, fields) => {
-    if (err) throw err;
-    console.log(rows, fields);
-    res.json(rows);
-  });
+app.get('/users/:name', (req, res) => {
+  const name = req.params.name;
+  console.log(req.params.name);
+  db.query(
+    `SELECT * FROM users WHERE name = '${name}';`,
+    (err, rows, fields) => {
+      if (err) throw err;
+      console.log(rows, fields);
+      res.json(rows);
+    }
+  );
 });
 
 app.listen(3000, () => {
