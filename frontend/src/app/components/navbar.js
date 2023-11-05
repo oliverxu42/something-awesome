@@ -16,19 +16,19 @@ const Navbar = () => {
                     href='/sqli'
                     className='text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium'
                   >
-                    SQLi
+                    SQL Injection (SQLi)
                   </Link>
                   <a
-                    href='#'
+                    href='/xss'
                     className='text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium'
                   >
-                    XXS
+                    Cross-Site Scripting (XXS)
                   </a>
                   <a
-                    href='#'
+                    href='/csrf'
                     className='text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium'
                   >
-                    Buffer Overflows
+                    Cross-Site Request Forgery (CSRF)
                   </a>
                   <a
                     href='#'

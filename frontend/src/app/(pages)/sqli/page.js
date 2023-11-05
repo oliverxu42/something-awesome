@@ -1,72 +1,111 @@
 'use client';
 
-import Navbar from '@/app/components/navbar';
 import { useState } from 'react';
+
+import ArticeLayout from '@/app/components/articleLayout';
+import CodeBlock from '@/app/components/codeblock';
 
 const url = 'http://localhost:3000';
 
 const SearchForm = () => {
   const [name, setName] = useState();
+  const [results, setResults] = useState('Please search for a name!');
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    console.log(name);
-    const res = await fetch(`${url}/users/${name}`);
+    const res = await fetch(url + '/users/' + name);
     const data = await res.json();
-    console.log(data);
+    if (data) {
+      console.log(data);
+      setResults(data);
+      console.log(results);
+    }
   };
 
   return (
-    <form onSubmit={handleSearch} className='p-2'>
-      <input
-        className='border-2 text-gray-700 text-sm font-bold mb-2'
-        type='text'
-        name='name'
-        onChange={(e) => setName(e.target.value)}
-        placeholder='name'
-      />
-      <button
-        className='m-2 p-1 bg-blue-500 hover:bg-blue-700 text-white rounded focus:outline-none focus:shadow-outline'
-        type='submit'
-      >
-        Search
-      </button>
-    </form>
+    <>
+      <form onSubmit={handleSearch} className='py-2'>
+        <input
+          className='border-2 text-gray-700 text-sm my-2 p-3'
+          type='text'
+          name='name'
+          onChange={(e) => setName(e.target.value)}
+          placeholder='Enter a name!'
+        />
+        <button
+          className='m-2 p-3 bg-purple-700 hover:bg-purple-500 text-white rounded focus:outline-none focus:shadow-outline'
+          type='submit'
+        >
+          Search
+        </button>
+      </form>
+      <div>{JSON.stringify(results)}</div>
+    </>
   );
 };
 
 const SQLiPage = () => {
   return (
     <>
-      <Navbar />
-      <article className='m-5'>
-        <h1 className='pt-5 font-bold text-lg'>SQL Injection</h1>
-        <hr className='m-3'></hr>
+      <ArticeLayout>
+        <h1>SQL Injection (SQLi)</h1>
+        <hr></hr>
+        <h2>What is SQL Injection?</h2>
         <p>
           SQL injection (SQLi) is a web security vulnerability where malicious
-          code can be placed into an SQL statement.
+          code can be placed into an SQL statement. Attackers can inject this
+          malicious SQL query typically via input data from the client which is
+          sent to the backend database.
         </p>
-        <p>More content...</p>
-      </article>
-      <div className='m-5'>
-        <h1 className='pt-5 font-bold text-lg'>Quiz</h1>
-        <hr className='m-3'></hr>
-        <p>
-          Which of the following payload will return all the users from the
-          database?
-        </p>
-        <ul className='m-3'>
-          <li>a. x" OR 1 = 1; --test</li>
-          <li>b. x" AND 1 = 1; --test</li>
-          <li>c. SELECT * FROM users</li>
+        <h2>What are the impacts of SQLi?</h2>
+        <p>A successful SQL injection attack can allow an attacker:</p>
+        <ul className='list-disc list-outside pl-6 pt-3'>
+          <li>
+            access unauthorised sensitive data from a database (such as
+            passwords, credit card details, personal information...)
+          </li>
+          <li>
+            modify the data within the database through INSERT, UPDATE and
+            DELETE queries
+          </li>
+          <li>
+            execute administration operations on the database (such as dropping
+            the entire database).
+          </li>
         </ul>
-      </div>
-      <div className='m-5'>
-        <h1 className='pt-5 font-bold text-lg'>Practice Wargame</h1>
-        <hr className='m-3'></hr>
-        <p>Find the flag using an SQL injection attack.</p>
-        <SearchForm />
-      </div>
+        <h2>How to perform an SQLi Attack?</h2>
+        <p>
+          Let's say we have a database that manages some students where every
+          student is identified via an id (e.g. "1234567") and contains some
+          data (their name, age, grade). <br />
+          If our application wanted to retrieve the details of all the students
+          with a certain name, we might make the following SQL query:
+        </p>
+        <CodeBlock command={'SELECT * FROM students WHERE name = "Bob";'} />
+        <p>
+          However, if we are not careful, an attacker can modify the query to
+          something like this:
+        </p>
+        <CodeBlock
+          command={'SELECT * FROM students WHERE name = "Bob" OR 1 = 1;'}
+        />
+        <p>
+          The injection of the '1 = 1' clause will always evaluate to true and
+          since we 'OR' this with their name, the conditional will always be
+          true! So, this query instead of just returning a list of students with
+          the name "Bob", it will actually return EVERY user in the database!
+        </p>
+        <div>
+          <h2>Try it out!</h2>
+          <hr className='my-3'></hr>
+          <p>
+            The search bar below will query a database of users with their name.
+            Can you use an SQL injection attack to reveal the information of all
+            the users in the database?{' '}
+          </p>
+          <SearchForm />
+        </div>
+      </ArticeLayout>
     </>
   );
 };

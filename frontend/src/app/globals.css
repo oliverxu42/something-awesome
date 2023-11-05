@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  h1 {
+    @apply pt-3 font-bold text-4xl mb-5 mt-5;
+  }
+  h2 {
+    @apply pt-5 font-bold text-2xl mb-5 mt-5;
+  }
+  p {
+    @apply leading-relaxed;
+  }
+}

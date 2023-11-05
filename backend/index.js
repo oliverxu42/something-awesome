@@ -19,15 +19,16 @@ db.connect();
 
 app.get('/users/:name', (req, res) => {
   const name = req.params.name;
-  console.log(req.params.name);
-  db.query(
-    `SELECT * FROM users WHERE name = '${name}';`,
-    (err, rows, fields) => {
-      if (err) throw err;
-      console.log(rows, fields);
+  const query = `SELECT * FROM users WHERE name = "${name}"`;
+
+  db.query(query, (err, rows, fields) => {
+    if (err) {
+      res.status(400).json('Bad SQL query!');
+    } else {
+      console.log(rows);
       res.json(rows);
     }
-  );
+  });
 });
 
 app.listen(3000, () => {
