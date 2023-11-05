@@ -16,9 +16,9 @@ const SearchForm = () => {
     const res = await fetch(url + '/users/' + name);
     const data = await res.json();
     if (data) {
-      console.log(data);
       setResults(data);
-      console.log(results);
+    } else {
+      setResults('Looks there was an error processing your request!');
     }
   };
 
@@ -81,13 +81,13 @@ const SQLiPage = () => {
           If our application wanted to retrieve the details of all the students
           with a certain name, we might make the following SQL query:
         </p>
-        <CodeBlock command={'SELECT * FROM students WHERE name = "Bob";'} />
+        <CodeBlock lines={['SELECT * FROM students WHERE name = "Bob";']} />
         <p>
           However, if we are not careful, an attacker can modify the query to
           something like this:
         </p>
         <CodeBlock
-          command={'SELECT * FROM students WHERE name = "Bob" OR 1 = 1;'}
+          lines={['SELECT * FROM students WHERE name = "Bob" OR 1 = 1;']}
         />
         <p>
           The injection of the '1 = 1' clause will always evaluate to true and

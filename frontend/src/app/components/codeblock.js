@@ -1,16 +1,14 @@
-const CodeBlock = ({ command, args }) => {
+const CodeBlock = ({ lines }) => {
   return (
     <div className='my-3 mb-5'>
       <code className='text-sm sm:text-base inline-flex text-left items-center space-x-4 bg-gray-800 text-white rounded-lg p-4'>
         <span className='flex gap-4 px-3'>
           <span className='flex-1'>
-            <span>{command}</span>
-            {args &&
-              args.map((a, i) => (
-                <span key={i} className='text-yellow-500'>
-                  {a}
-                </span>
-              ))}
+            {lines.map((l, i) => (
+              <div key={i}>
+                <p>{l}</p>
+              </div>
+            ))}
           </span>
         </span>
         {/* 
