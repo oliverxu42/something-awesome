@@ -117,6 +117,10 @@ const NoSQLiPage = () => {
           If the injection was successful, this code would be executed by the
           server and cause it to pause for 5 seconds.
         </p>
+
+        <h2>Try it out!</h2>
+        <hr className='my-3'></hr>
+        <p>See if you can by-pass authentication with a NoSQLi attack!</p>
         <SearchForm />
       </ArticleLayout>
     </>
