@@ -2,6 +2,7 @@ import express, { json } from 'express';
 import cors from 'cors';
 import mysql from 'mysql';
 import dotenv from 'dotenv';
+import { MongoClient } from 'mongodb';
 dotenv.config();
 
 const app = express();
@@ -16,6 +17,60 @@ const db = mysql.createConnection({
 });
 
 db.connect();
+
+const MONGO_DB = process.env.MONGO_URI || '';
+const mongoClient = new MongoClient(MONGO_DB);
+mongoClient.connect();
+const usersMongoDb = mongoClient.db('db').collection('users');
+
+app.post('/auth/login', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    console.log(email, password);
+    const user = await usersMongoDb
+      .find({ email: JSON.parse(email), password: JSON.parse(password) }) // JSON.parse to demonstrate noSQLi
+      .toArray();
+
+    if (user.length === 0) {
+      res.sendStatus(403);
+    } else {
+      res.json(user);
+    }
+  } catch {
+    const user = await usersMongoDb
+      .find({ email: email, password: password })
+      .toArray();
+    if (user.length === 0) {
+      res.sendStatus(403);
+    } else {
+      res.json(user);
+    }
+  }
+});
+
+app.get('/mongo/users', async (req, res) => {
+  const name = req.query.name;
+  if (name) {
+    const users = await usersMongoDb.find({ name }).toArray();
+    console.log(users);
+    res.json(users);
+  } else {
+    res.status(400).json('Bad query!');
+  }
+});
+
+app.post('/mongo/users', async (req, res) => {
+  const name = req.body.name;
+  const query = { name: name };
+  console.log(name);
+  if (name) {
+    const users = await usersMongoDb.find(query).toArray();
+    console.log(users);
+    res.json(users);
+  } else {
+    res.status(400).json('Bad query!');
+  }
+});
 
 app.get('/users/:name', (req, res) => {
   const name = req.params.name;
